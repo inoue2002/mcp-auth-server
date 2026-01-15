@@ -4,6 +4,7 @@ import crypto from 'crypto';
 const AZURE_CLIENT_ID = process.env.AZURE_CLIENT_ID!;
 const AZURE_CLIENT_SECRET = process.env.AZURE_CLIENT_SECRET!;
 const AZURE_TENANT_ID = process.env.AZURE_TENANT_ID!;
+const ALLOWED_MEMBERS = process.env.ALLOWED_MEMBERS?.split(',').map(m => m.trim().toLowerCase()) || [];
 
 // Import pending auths from authorize route
 import { pendingAuths } from '../authorize/route';
@@ -20,14 +21,13 @@ const authorizationCodes = new Map<string, {
 
 export { authorizationCodes };
 
-// Members list (move to separate file or DB in production)
-const MEMBERS = [
-  'example@xxx.ac.jp',
-  // Add member emails here
-];
-
 function isMember(email: string): boolean {
-  return MEMBERS.some(m => m.toLowerCase() === email.toLowerCase());
+  if (ALLOWED_MEMBERS.length === 0) {
+    // If no members configured, allow all (for testing)
+    console.warn('ALLOWED_MEMBERS not configured, allowing all users');
+    return true;
+  }
+  return ALLOWED_MEMBERS.includes(email.toLowerCase());
 }
 
 export async function GET(request: NextRequest) {
@@ -104,13 +104,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Could not determine user email' }, { status: 400 });
     }
 
-    // TODO: Re-enable membership check after testing
-    // if (!isMember(email)) {
-    //   return NextResponse.json(
-    //     { error: 'access_denied', error_description: 'You are not a member of this lab' },
-    //     { status: 403 }
-    //   );
-    // }
+    // Check if user is allowed
+    if (!isMember(email)) {
+      console.log('Access denied for:', email);
+      return NextResponse.json(
+        { error: 'access_denied', error_description: 'You are not a member of this lab' },
+        { status: 403 }
+      );
+    }
     console.log('User authenticated:', email);
 
     // Generate authorization code

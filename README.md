@@ -125,7 +125,7 @@ sequenceDiagram
 
 ### 2. 環境変数の設定
 
-Vercelで以下の環境変数を設定：
+Vercelで以下の環境変数を設定（`.env.sample` 参照）：
 
 | 変数名 | 説明 |
 |--------|------|
@@ -133,21 +133,16 @@ Vercelで以下の環境変数を設定：
 | `AZURE_CLIENT_SECRET` | Client Secret |
 | `AZURE_TENANT_ID` | Directory (tenant) ID |
 | `JWT_SECRET` | JWTの署名キー（`openssl rand -base64 32` で生成） |
+| `ALLOWED_MEMBERS` | 許可するメンバーのメールアドレス（カンマ区切り） |
 
-### 3. メンバーリストの設定
-
-`src/data/members.json` に研究室メンバーのメールアドレスを追加：
-
-```json
-{
-  "members": [
-    "tanaka@xxx.ac.jp",
-    "suzuki@xxx.ac.jp"
-  ]
-}
+例：
+```bash
+ALLOWED_MEMBERS=tanaka@xxx.ac.jp,suzuki@xxx.ac.jp,yamada@xxx.ac.jp
 ```
 
-### 4. デプロイ
+**注意**: `ALLOWED_MEMBERS` が未設定の場合、全ユーザーがアクセス可能になります（テスト用）。
+
+### 3. デプロイ
 
 ```bash
 npm install
