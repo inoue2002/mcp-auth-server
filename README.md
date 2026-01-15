@@ -67,21 +67,21 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A[Claude: MCPサーバーに接続] --> B{メタデータ取得}
-    B -->|GET /.well-known/oauth-authorization-server| C[メタデータ取得成功]
-    B -->|404| D[デフォルトエンドポイント使用]
+    A["Claude: MCPサーバーに接続"] --> B{"メタデータ取得"}
+    B -->|"メタデータ取得"| C["メタデータ取得成功"]
+    B -->|"404"| D["デフォルトエンドポイント使用"]
 
-    C --> E{registration_endpoint あり?}
+    C --> E{"registration_endpoint あり?"}
     D --> E
 
-    E -->|Yes| F[POST /register で client_id 取得]
-    E -->|No| G[手動で client_id 設定が必要]
+    E -->|"Yes"| F["Dynamic Client Registration"]
+    E -->|"No"| G["手動で client_id 設定が必要"]
 
-    F --> H[OAuth認可フロー開始]
+    F --> H["OAuth認可フロー開始"]
     G --> H
 
-    H --> I[PKCE code_verifier, code_challenge 生成]
-    I --> J[/authorize へリダイレクト]
+    H --> I["PKCE code_verifier, code_challenge 生成"]
+    I --> J["authorize へリダイレクト"]
 ```
 
 ### PKCE (Proof Key for Code Exchange)
