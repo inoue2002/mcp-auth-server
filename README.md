@@ -14,6 +14,101 @@ Claude ←→ MCPサーバー（Vercel）←→ Entra ID
        （JSONファイル）
 ```
 
+## 認証フロー
+
+このリポジトリは MCP Authorization Specification の **Third-Party Authorization Flow** を実装しています。MCPサーバーが Claude に対しては認可サーバーとして、Entra ID に対してはOAuthクライアントとして動作します。
+
+### 全体フロー
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant C as Claude (MCP Client)
+    participant M as MCP Server (Vercel)
+    participant E as Entra ID
+
+    Note over C,M: 1. メタデータ取得
+    C->>M: GET /.well-known/oauth-authorization-server
+    M->>C: メタデータ (endpoints, supported features)
+
+    Note over C,M: 2. Dynamic Client Registration
+    C->>M: POST /register
+    M->>C: client_id発行
+
+    Note over C,M: 3. 認可リクエスト開始
+    C->>M: GET /authorize (client_id, redirect_uri, code_challenge, state)
+
+    Note over M,E: 4. Entra IDへリダイレクト
+    M->>B: Redirect to Entra ID /authorize
+    B->>E: 認可リクエスト
+
+    Note over E: 5. ユーザーがログイン・認可
+    E->>B: Redirect to MCP Server /callback
+    B->>M: Authorization code (from Entra ID)
+
+    Note over M,E: 6. Entra IDトークン取得
+    M->>E: POST /token (code, client_secret)
+    E->>M: Access token + ID token
+
+    Note over M: 7. ユーザー検証 & MCPトークン発行
+    M->>B: Redirect to Claude callback with MCP auth code
+    B->>C: MCP Authorization code
+
+    Note over C,M: 8. トークン交換
+    C->>M: POST /token (code, code_verifier)
+    M->>C: MCP Access token + Refresh token
+
+    Note over C,M: 9. MCP通信開始
+    C->>M: MCP Request with Bearer token
+    M->>C: MCP Response
+```
+
+### メタデータ取得フロー
+
+```mermaid
+flowchart TD
+    A[Claude: MCPサーバーに接続] --> B{メタデータ取得}
+    B -->|GET /.well-known/oauth-authorization-server| C[メタデータ取得成功]
+    B -->|404| D[デフォルトエンドポイント使用]
+
+    C --> E{registration_endpoint あり?}
+    D --> E
+
+    E -->|Yes| F[POST /register で client_id 取得]
+    E -->|No| G[手動で client_id 設定が必要]
+
+    F --> H[OAuth認可フロー開始]
+    G --> H
+
+    H --> I[PKCE code_verifier, code_challenge 生成]
+    I --> J[/authorize へリダイレクト]
+```
+
+### PKCE (Proof Key for Code Exchange)
+
+```mermaid
+sequenceDiagram
+    participant C as Claude
+    participant M as MCP Server
+
+    Note over C: code_verifier をランダム生成
+    Note over C: code_challenge = SHA256(code_verifier)
+
+    C->>M: /authorize?code_challenge=xxx&code_challenge_method=S256
+    Note over M: code_challenge を保存
+
+    M->>C: Authorization code
+
+    C->>M: /token?code=xxx&code_verifier=yyy
+    Note over M: SHA256(code_verifier) == 保存した code_challenge ?
+
+    alt 検証成功
+        M->>C: Access token
+    else 検証失敗
+        M->>C: Error: invalid_grant
+    end
+```
+
 ## セットアップ
 
 ### 1. Entra ID アプリケーション登録
