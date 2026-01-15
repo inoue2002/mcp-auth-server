@@ -59,20 +59,38 @@ vercel --prod
 
 ## Claude での設定
 
+### Claude Code (CLI)
+
+以下のコマンドでMCPサーバーを追加：
+
+```bash
+claude mcp add --transport http lab-mcp https://mcp-auth-server-five.vercel.app/api/mcp
 ```
-Server URL:     https://<your-app>.vercel.app/mcp
+
+追加後、`/mcp` コマンドで認証を開始できます。初回はEntra IDのログイン画面が表示されます。
+
+### Claude.ai (Web)
+
+Claude.aiの設定画面からMCPサーバーを追加：
+
+```
+Server URL:     https://mcp-auth-server-five.vercel.app/api/mcp
 Authentication: OAuth 2.0
-Client ID:      lab-mcp-client
 ```
+
+※ Dynamic Client Registrationに対応しているため、Client IDは自動で発行されます。
 
 ## エンドポイント
 
 | パス | メソッド | 説明 |
 |------|----------|------|
+| `/.well-known/oauth-authorization-server` | GET | OAuth メタデータ |
+| `/.well-known/oauth-protected-resource` | GET | Protected Resource メタデータ |
+| `/register` | POST | Dynamic Client Registration |
 | `/authorize` | GET | OAuth認可リクエスト受付 |
 | `/callback` | GET | Entra IDからのコールバック |
 | `/token` | POST | トークン発行 |
-| `/mcp` | POST | MCPプロトコル |
+| `/api/mcp` | GET/POST | MCPプロトコル |
 
 ## 利用可能なツール
 
