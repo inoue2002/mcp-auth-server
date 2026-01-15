@@ -1,9 +1,0 @@
-{
-  "/.well-known/oauth-protected-resource/route": "/.well-known/oauth-protected-resource",
-  "/_global-error/page": "/_global-error",
-  "/_not-found/page": "/_not-found",
-  "/api/mcp/route": "/api/mcp",
-  "/authorize/route": "/authorize",
-  "/callback/route": "/callback",
-  "/token/route": "/token"
-}
