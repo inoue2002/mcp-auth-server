@@ -1,15 +1,8 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    { "src": "/authorize", "dest": "/api/authorize" },
-    { "src": "/callback", "dest": "/api/callback" },
-    { "src": "/token", "dest": "/api/token" },
-    { "src": "/mcp", "dest": "/api/mcp" }
+  "rewrites": [
+    { "source": "/authorize", "destination": "/api/authorize" },
+    { "source": "/callback", "destination": "/api/callback" },
+    { "source": "/token", "destination": "/api/token" },
+    { "source": "/mcp", "destination": "/api/mcp" }
   ]
 }
