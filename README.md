@@ -1,5 +1,7 @@
 # MCP Auth Server
 
+> このリポジトリは [MCP Authorization Specification](https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization) を参考に、MCPにOAuth 2.0認証を実装した練習リポジトリです。
+
 研究室メンバー限定のMCPサーバー。Entra ID（Azure AD）を使った認証と、メンバーリストによる認可を組み合わせています。
 
 ## アーキテクチャ
