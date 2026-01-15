@@ -142,6 +142,40 @@ ALLOWED_MEMBERS=tanaka@xxx.ac.jp,suzuki@xxx.ac.jp,yamada@xxx.ac.jp
 
 **注意**: `ALLOWED_MEMBERS` が未設定の場合、全ユーザーがアクセス可能になります（テスト用）。
 
+### メンバーの追加・削除
+
+メンバーを追加・削除するには、Vercelの環境変数 `ALLOWED_MEMBERS` を更新します。
+
+**CLIで更新する場合：**
+
+```bash
+# 既存の環境変数を削除
+npx vercel env rm ALLOWED_MEMBERS production -y
+
+# 新しいメンバーリストを追加（カンマ区切り）
+echo -n "member1@example.ac.jp,member2@example.ac.jp,newmember@example.ac.jp" | npx vercel env add ALLOWED_MEMBERS production
+
+# 再デプロイ
+npx vercel --prod
+```
+
+**ダッシュボードで更新する場合：**
+
+1. [Vercel Dashboard](https://vercel.com) → プロジェクト → Settings → Environment Variables
+2. `ALLOWED_MEMBERS` を編集
+3. Deployments → 最新のデプロイを Redeploy
+
+### 未登録ユーザーがログインした場合
+
+`ALLOWED_MEMBERS` に登録されていないメールアドレスでログインすると、以下のエラーが表示されます：
+
+```json
+{
+  "error": "access_denied",
+  "error_description": "You are not a member of this lab"
+}
+```
+
 ### 3. デプロイ
 
 ```bash
@@ -156,7 +190,7 @@ vercel --prod
 以下のコマンドでMCPサーバーを追加：
 
 ```bash
-claude mcp add --transport http lab-mcp https://mcp-auth-server-five.vercel.app/api/mcp
+claude mcp add --transport http lab-mcp https://mcp-auth-server.vercel.app/api/mcp
 ```
 
 追加後、`/mcp` コマンドで認証を開始できます。初回はEntra IDのログイン画面が表示されます。
@@ -166,7 +200,7 @@ claude mcp add --transport http lab-mcp https://mcp-auth-server-five.vercel.app/
 Claude.aiの設定画面からMCPサーバーを追加：
 
 ```
-Server URL:     https://mcp-auth-server-five.vercel.app/api/mcp
+Server URL:     https://mcp-auth-server.vercel.app/api/mcp
 Authentication: OAuth 2.0
 ```
 
