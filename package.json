@@ -1,0 +1,24 @@
+{
+  "name": "mcp-auth-server",
+  "version": "1.0.0",
+  "description": "MCP server with Entra ID authentication for lab members",
+  "scripts": {
+    "build": "tsc",
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["mcp", "oauth", "entra-id", "vercel"],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.0.8",
+    "@vercel/node": "^5.5.20",
+    "typescript": "^5.9.3"
+  }
+}

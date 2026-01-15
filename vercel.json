@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    { "src": "/authorize", "dest": "/api/authorize" },
+    { "src": "/callback", "dest": "/api/callback" },
+    { "src": "/token", "dest": "/api/token" },
+    { "src": "/mcp", "dest": "/api/mcp" }
+  ]
+}
