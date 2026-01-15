@@ -15,7 +15,11 @@ const pendingAuths = new Map<string, {
 export { pendingAuths };
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+  try {
+    console.log('AZURE_CLIENT_ID:', process.env.AZURE_CLIENT_ID ? 'set' : 'NOT SET');
+    console.log('AZURE_TENANT_ID:', process.env.AZURE_TENANT_ID ? 'set' : 'NOT SET');
+
+    const searchParams = request.nextUrl.searchParams;
 
   const client_id = searchParams.get('client_id');
   const redirect_uri = searchParams.get('redirect_uri');
@@ -67,4 +71,8 @@ export async function GET(request: NextRequest) {
   const entraUrl = `https://login.microsoftonline.com/${AZURE_TENANT_ID}/oauth2/v2.0/authorize?${params.toString()}`;
 
   return NextResponse.redirect(entraUrl);
+  } catch (error) {
+    console.error('Authorize error:', error);
+    return NextResponse.json({ error: 'Internal server error', details: String(error) }, { status: 500 });
+  }
 }
