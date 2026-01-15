@@ -66,6 +66,7 @@ export async function GET(request: NextRequest) {
     response_mode: 'query',
     scope: 'openid email profile',
     state: combinedState,
+    prompt: 'login', // Always show login screen
   });
 
   const entraUrl = `https://login.microsoftonline.com/${AZURE_TENANT_ID}/oauth2/v2.0/authorize?${params.toString()}`;
