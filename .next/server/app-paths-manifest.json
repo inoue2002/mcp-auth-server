@@ -1,0 +1,9 @@
+{
+  "/.well-known/oauth-protected-resource/route": "app/.well-known/oauth-protected-resource/route.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/mcp/route": "app/api/mcp/route.js",
+  "/authorize/route": "app/authorize/route.js",
+  "/callback/route": "app/callback/route.js",
+  "/token/route": "app/token/route.js"
+}
